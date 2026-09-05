@@ -36,11 +36,11 @@
   /* the fluid unit; --fit is set per slide by the auto-fit guard */
   --u: calc(min(1vw, 1.62vh) * var(--fit, 1));
 
-  --fs-micro: clamp(9.5px, calc(.72 * var(--u)), 12px);
-  --fs-xs:    clamp(10.5px, calc(.82 * var(--u)), 13px);
-  --fs-sm:    clamp(11.5px, calc(.94 * var(--u)), 14.5px);
-  --fs-base:  clamp(12.5px, calc(1.06 * var(--u)), 16.5px);
-  --fs-lead:  clamp(13.5px, calc(1.36 * var(--u)), 21px);
+  --fs-micro: clamp(10px,  calc(.78 * var(--u)), 12.5px);
+  --fs-xs:    clamp(13px,  calc(1.02 * var(--u)), 16px);
+  --fs-sm:    clamp(14px,  calc(1.14 * var(--u)), 17px);
+  --fs-base:  clamp(15px,  calc(1.26 * var(--u)), 19px);
+  --fs-lead:  clamp(15px,  calc(1.44 * var(--u)), 22px);
 
   --sp-1: clamp(4px,  calc(.4 * var(--u)), 8px);
   --sp-2: clamp(7px,  calc(.72 * var(--u)), 13px);
@@ -322,7 +322,7 @@ h2 {
   border:1px solid var(--red);
   transform:rotate(45deg);
 }
-.list.tight li { font-size:clamp(12px, calc(1.06 * var(--u)), 16px); line-height:1.45; }
+.list.tight li { font-size:clamp(14px, calc(1.24 * var(--u)), 18px); line-height:1.45; }
 
 .chain { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--sp-2); width:100%; }
 .chain-step {
@@ -617,7 +617,7 @@ h2 {
 .fchart { width:100%; height:auto; max-height:min(30vh, 260px); overflow:visible; }
 .fchart .grid-line { stroke:var(--line); stroke-width:1; }
 .fchart .axis { stroke:var(--muted); stroke-width:1.2; }
-.fchart text { font-size:11px; fill:var(--muted); font-family:inherit; }
+.fchart text { font-size:13px; fill:var(--muted); font-family:inherit; }
 .fchart .line { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
 .fchart .line.quo { stroke:var(--muted); stroke-dasharray:5 4; }
 .fchart .line.div { stroke:var(--gold); }

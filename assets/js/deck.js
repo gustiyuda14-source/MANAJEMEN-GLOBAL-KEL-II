@@ -32,7 +32,7 @@ let locked = false;
    and fight the slide transition.
    --------------------------------------------------------- */
 
-const FIT_MIN = 0.58;
+const FIT_MIN = 0.48;
 const FIT_STEP = 0.96;
 const SKIP = ['silhouette', 'hero-route'];
 
@@ -75,7 +75,7 @@ function fitSlide(slide) {
 
   slide.classList.add('measuring');
   let fit = 1;
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 40; i++) {
     if (overflowAmount(slide) <= 1) break;
     fit = Math.max(fit * FIT_STEP, FIT_MIN);
     slide.style.setProperty('--fit', fit.toFixed(4));
