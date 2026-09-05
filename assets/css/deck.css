@@ -36,11 +36,14 @@
   /* the fluid unit; --fit is set per slide by the auto-fit guard */
   --u: calc(min(1vw, 1.62vh) * var(--fit, 1));
 
-  --fs-micro: clamp(10px,  calc(.78 * var(--u)), 12.5px);
-  --fs-xs:    clamp(13px,  calc(1.02 * var(--u)), 16px);
-  --fs-sm:    clamp(14px,  calc(1.14 * var(--u)), 17px);
-  --fs-base:  clamp(15px,  calc(1.26 * var(--u)), 19px);
-  --fs-lead:  clamp(15px,  calc(1.44 * var(--u)), 22px);
+  /* Ceilings raised well past a normal desktop window: on a large or
+     projected display --u keeps climbing, and card text should climb
+     with it instead of capping out while the headline keeps growing. */
+  --fs-micro: clamp(10px,  calc(.82 * var(--u)), 15px);
+  --fs-xs:    clamp(13px,  calc(1.16 * var(--u)), 20px);
+  --fs-sm:    clamp(14px,  calc(1.3 * var(--u)),  22px);
+  --fs-base:  clamp(15px,  calc(1.46 * var(--u)), 25px);
+  --fs-lead:  clamp(15px,  calc(1.62 * var(--u)), 28px);
 
   --sp-1: clamp(4px,  calc(.4 * var(--u)), 8px);
   --sp-2: clamp(7px,  calc(.72 * var(--u)), 13px);
@@ -322,7 +325,7 @@ h2 {
   border:1px solid var(--red);
   transform:rotate(45deg);
 }
-.list.tight li { font-size:clamp(14px, calc(1.24 * var(--u)), 18px); line-height:1.45; }
+.list.tight li { font-size:clamp(14px, calc(1.4 * var(--u)), 23px); line-height:1.45; }
 
 .chain { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--sp-2); width:100%; }
 .chain-step {
