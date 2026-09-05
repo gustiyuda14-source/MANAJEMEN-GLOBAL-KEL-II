@@ -33,7 +33,8 @@
     .tag.hot { border-color:var(--red); color:var(--paper); background:var(--red); }
     .focus-line { margin-top:8px; color:var(--muted); font-size:13px; letter-spacing:.01em; }
     .copy { position:relative; z-index:2; grid-row:1; min-height:0; }
-    .visual { position:relative; grid-row:1; min-height:min(300px,100%); max-height:100%; height:min(53vw,610px); display:grid; place-items:center; transform-style:preserve-3d; }
+    .visual { position:relative; grid-row:1; min-height:min(300px,100%); max-height:100%; height:min(53vw,610px); display:flex; flex-flow:row wrap; align-items:center; justify-content:center; gap:20px; transform-style:preserve-3d; }
+    .visual:has(.render3d) { overflow:hidden; }
     .node { position:absolute; width:12px; height:12px; border-radius:50%; background:var(--red); box-shadow:0 0 0 7px rgba(167,47,50,.13),0 0 24px var(--red); }
     .visual-label { position:absolute; bottom:3%; width:min(360px,90%); padding-top:11px; border-top:2px solid var(--red); color:#4c3e38; font-size:13px; text-align:left; line-height:1.5; }
     .metric { display:flex; align-items:baseline; gap:11px; margin-bottom:24px; }
@@ -64,6 +65,13 @@
     .silhouette svg { width:min(76%,440px); height:auto; fill:none; stroke:currentColor; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
     .visual > *:not(.silhouette):not(.visual-label) { position:relative; z-index:1; }
     .visual-label { z-index:2; }
+    .render3d { --tilt-x:0deg; --tilt-y:0deg; flex:0 0 auto; display:grid; place-items:center; width:min(62%,300px); height:min(62%,300px); perspective:1000px; pointer-events:none; transform:rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style:preserve-3d; transition:transform .28s ease-out; }
+    .render3d img { display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 18px 24px rgba(79,44,34,.18)); transform-style:preserve-3d; }
+    .slide.active .render3d { animation:popIn .5s cubic-bezier(.2,.9,.3,1.35) .08s; }
+    .slide.active .render3d img { animation:render3dFloat 4s ease-in-out .5s infinite alternate; }
+    @keyframes render3dFloat { from { transform:translateY(8px) rotateY(-6deg); } to { transform:translateY(-8px) rotateY(6deg); } }
+    .visual:has(> .comparison) .render3d, .visual:has(> .matrix) .render3d, .visual:has(> .cover-quote) .render3d { width:min(40%,180px); height:min(40%,180px); }
+    .visual > :is(.comparison,.matrix,.cover-quote) { flex:0 1 auto; }
     .slide > .silhouette { color:rgba(167,47,50,.13); place-items:center; }
     .slide > .silhouette svg { width:min(46%,420px); }
 
@@ -102,8 +110,6 @@
     .slide.active .quad:nth-child(1){animation-delay:.14s} .slide.active .quad:nth-child(2){animation-delay:.19s} .slide.active .quad:nth-child(3){animation-delay:.24s} .slide.active .quad:nth-child(4){animation-delay:.29s}
     .slide.active .refs li { animation:rise .45s ease-out backwards; }
     .slide.active .refs li:nth-child(1){animation-delay:.12s} .slide.active .refs li:nth-child(2){animation-delay:.16s} .slide.active .refs li:nth-child(3){animation-delay:.20s} .slide.active .refs li:nth-child(4){animation-delay:.24s} .slide.active .refs li:nth-child(5){animation-delay:.28s} .slide.active .refs li:nth-child(6){animation-delay:.32s} .slide.active .refs li:nth-child(7){animation-delay:.36s} .slide.active .refs li:nth-child(8){animation-delay:.40s} .slide.active .refs li:nth-child(9){animation-delay:.44s} .slide.active .refs li:nth-child(10){animation-delay:.48s}
-    .slide.active .spice-rack span { animation:rise .5s cubic-bezier(.2,.8,.2,1) backwards; }
-    .slide.active .spice-rack span:nth-child(1){animation-delay:.12s} .slide.active .spice-rack span:nth-child(2){animation-delay:.16s} .slide.active .spice-rack span:nth-child(3){animation-delay:.2s} .slide.active .spice-rack span:nth-child(4){animation-delay:.24s} .slide.active .spice-rack span:nth-child(5){animation-delay:.28s} .slide.active .spice-rack span:nth-child(6){animation-delay:.32s}
 
     .matrix { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; width:min(540px,100%); }
     .quad { padding:16px; border:1px solid var(--line); border-top:3px solid var(--red); border-radius:2px; background:var(--paper); }
@@ -116,9 +122,30 @@
     .slide.wide .comparison { width:100%; grid-template-columns:repeat(2,minmax(0,1fr)); }
     .slide.flip .copy { grid-column:2; }
     .slide.flip .visual { grid-column:1; }
+    .slide.wide .visual { position:absolute; top:62%; right:clamp(28px,3vw,64px); width:min(30vw,380px); height:min(48vh,420px); z-index:1; opacity:.45; transform:translateY(-50%); }
+    .slide.closing .visual { position:absolute; top:64%; right:clamp(28px,3vw,64px); width:min(28vw,360px); height:min(45vh,390px); z-index:1; opacity:.58; transform:translateY(-50%); }
+    .slide.wide .visual:has(.render3d), .slide.closing .visual:has(.render3d) { top:clamp(52px,8vh,92px); right:clamp(28px,4vw,72px); bottom:auto; width:min(20vw,240px); height:min(20vw,240px); opacity:1; z-index:3; transform:none; }
     .refs { display:grid; gap:9px; max-width:900px; padding:0; margin:0; list-style:none; }
     .refs li { display:flex; gap:14px; padding-bottom:9px; border-bottom:1px solid var(--line); color:#4f423d; font-size:13px; line-height:1.45; }
     .refs b { flex:0 0 88px; padding-top:1px; color:var(--red); font-size:11px; letter-spacing:.09em; text-transform:uppercase; }
+
+    .forecast-grid { display:flex; gap:32px; flex-wrap:wrap; align-items:center; margin-top:6px; }
+    .forecast-grid > div { flex:1 1 320px; }
+    .fchart { width:100%; height:auto; overflow:visible; }
+    .fchart .grid-line { stroke:var(--line); stroke-width:1; }
+    .fchart .axis { stroke:var(--muted); stroke-width:1.2; }
+    .fchart text { font-size:10px; fill:var(--muted); font-family:inherit; }
+    .fchart .line { fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+    .fchart .line.quo { stroke:var(--muted); stroke-dasharray:5 4; }
+    .fchart .line.div { stroke:var(--gold); }
+    .fchart .line.esc { stroke:var(--red); stroke-dasharray:2 3; }
+    .fchart .pt { r:4; fill:var(--paper); stroke-width:2.5; }
+    .fchart .pt.quo { stroke:var(--muted); }
+    .fchart .pt.div { stroke:var(--gold); }
+    .fchart .pt.esc { stroke:var(--red); }
+    .flegend { display:grid; gap:8px; margin-top:14px; }
+    .flegend div { display:flex; align-items:center; gap:9px; font-size:12px; color:#4f423d; }
+    .flegend .dot { width:10px; height:10px; border-radius:50%; flex:0 0 auto; }
 
     .section-label { flex:0 0 auto; min-width:150px; color:var(--muted); font-size:10px; letter-spacing:.15em; text-transform:uppercase; }
     .section-label b { color:var(--red); font-weight:700; }
@@ -130,9 +157,6 @@
     .cover-quote::before { content:"\201C"; position:absolute; top:-4px; left:26px; font-family:Georgia,"Times New Roman",serif; font-size:92px; line-height:1; color:rgba(255,253,249,.28); }
     .cover-quote p { position:relative; margin:24px 0 18px; font-size:clamp(18px,1.7vw,24px); font-weight:700; line-height:1.42; }
     .cover-quote span { position:relative; display:block; color:rgba(255,253,249,.72); font-size:11px; letter-spacing:.14em; text-transform:uppercase; }
-    .spice-rack { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:min(300px,80%); }
-    .spice-rack span { display:grid; place-items:center; aspect-ratio:1; border-radius:8px; background:linear-gradient(150deg,var(--red),var(--violet)); color:var(--paper); font-weight:800; font-size:21px; letter-spacing:-.02em; box-shadow:0 12px 26px rgba(127,37,41,.22); }
-    .spice-rack span:nth-child(3n-1) { background:linear-gradient(150deg,var(--gold),#8b5725); }
 
     @media (min-width:781px) and (max-height:820px) {
       .slide { padding:76px clamp(28px,7vw,112px) 62px; gap:clamp(20px,4vw,64px); }
@@ -154,13 +178,14 @@
       .eyebrow { margin-bottom:14px; } .tag-row { margin-top:20px; }
       .source { font-size:10px; margin-top:10px; }
     }
-    @media (max-width:780px) { .slide{grid-template-columns:1fr;padding:56px 24px 64px;gap:8px}.visual{position:absolute;right:0;bottom:11%;width:56vw;height:38vw;opacity:.45;pointer-events:none}.copy{align-self:center}.chain,.comparison,.chain-wrap,.matrix{max-width:100%}.source{font-size:10px;margin-top:10px}.case-box{font-size:13px}.list li{font-size:15px}.list.tight li{font-size:12.5px;padding-bottom:8px;line-height:1.4}.list{gap:9px}.metric strong{font-size:80px}.closing{padding-inline:24px}.closing .visual{display:none}.rail{display:none}.section-label{display:none}.progress{width:38vw}.refs li{flex-direction:column;gap:2px;font-size:11px;padding-bottom:6px}.refs b{flex:none}.refs{gap:6px}.slide.wide{padding-top:56px;overflow-y:auto;overscroll-behavior:contain}.slide.wide .copy{align-self:start}.slide.wide .chain{grid-template-columns:1fr}.slide.wide .comparison{grid-template-columns:1fr}.slide.flip .copy,.slide.flip .visual{grid-column:auto}}
+    @media (max-width:780px) { .slide{grid-template-columns:1fr;padding:56px 24px 64px;gap:8px}.visual{position:absolute;right:0;bottom:11%;width:56vw;height:38vw;opacity:.45;pointer-events:none}.copy{align-self:center}.chain,.comparison,.chain-wrap,.matrix{max-width:100%}.source{font-size:10px;margin-top:10px}.case-box{font-size:13px}.list li{font-size:15px}.list.tight li{font-size:12.5px;padding-bottom:8px;line-height:1.4}.list{gap:9px}.metric strong{font-size:80px}.closing{padding-inline:24px}.closing .visual{display:none}.rail{display:none}.section-label{display:none}.progress{width:38vw}.refs li{flex-direction:column;gap:2px;font-size:11px;padding-bottom:6px}.refs b{flex:none}.refs{gap:6px}.slide.wide{padding-top:56px;overflow-y:auto;overscroll-behavior:contain}.slide.wide .copy{align-self:start}.slide.wide .chain{grid-template-columns:1fr}.slide.wide .comparison{grid-template-columns:1fr}.slide.wide .visual{top:auto;transform:none}.slide.flip .copy,.slide.flip .visual{grid-column:auto}}
     @media (prefers-reduced-motion:reduce) {
       *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
       .hero-word > i { transform:none!important; }
       .hero-route .rnode, .closing-fork .rnode { transform:none!important; }
       .hero-route .route, .closing-fork .route, .rail path { stroke-dashoffset:0!important; }
       .ambient { transform:none!important; }
+      .render3d,.render3d img { animation-duration:.01ms!important; transform:none!important; }
     }
   </style>
 </head>
@@ -191,13 +216,13 @@
 
       <article class="slide active" data-title="Cover">
         <svg class="hero-route" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path class="route" d="M-60,720 C220,720 260,540 490,540 C720,540 740,380 950,380 C1160,380 1210,232 1660,232"/><circle class="rnode" cx="490" cy="540" r="9" style="--d:.75s"/><circle class="rnode" cx="950" cy="380" r="9" style="--d:1.05s"/><circle class="rnode" cx="1330" cy="256" r="9" style="--d:1.35s"/></svg>
-        <div class="copy"><p class="eyebrow">Manajemen Global &middot; MM-S2 &middot; Studi Kelompok</p><h1 class="hero-h1"><span class="hero-word" style="--d:.06s"><i>Global</i></span> <span class="hero-word" style="--d:.13s"><i>strategy</i></span><br><span class="hero-word" style="--d:.20s"><i>needs</i></span> <span class="hero-word" style="--d:.26s"><i>a</i></span><br><em><span class="hero-word" style="--d:.33s"><i>resilient</i></span> <span class="hero-word" style="--d:.40s"><i>chain.</i></span></em></h1><p class="lead">Hampir semua barang elektronik yang kita pakai melewati China di satu tahap yang sama: pemurnian bahan bakunya. Selama tahap itu lancar, harga murah dan pasokan cepat. Ketika tahap itu terganggu, pabrik di banyak negara ikut berhenti pada minggu yang sama.</p><p class="focus-line">Fokus: posisi China di rantai pasok, bahan baku kritis, dan pilihan strategi perusahaan.</p></div>
+        <div class="copy"><p class="eyebrow">Manajemen Global &middot; MM-S2 &middot; Kelompok II</p><h1 class="hero-h1"><span class="hero-word" style="--d:.06s"><i>Global</i></span> <span class="hero-word" style="--d:.13s"><i>strategy</i></span><br><span class="hero-word" style="--d:.20s"><i>needs</i></span> <span class="hero-word" style="--d:.26s"><i>a</i></span><br><em><span class="hero-word" style="--d:.33s"><i>resilient</i></span> <span class="hero-word" style="--d:.40s"><i>chain.</i></span></em></h1><p class="lead">Hampir semua barang elektronik yang kita pakai melewati China di satu tahap yang sama: pemurnian bahan bakunya. Selama tahap itu lancar, harga murah dan pasokan cepat. Ketika tahap itu terganggu, pabrik di banyak negara ikut berhenti pada minggu yang sama.</p><p class="focus-line">Fokus: posisi China di rantai pasok, bahan baku kritis, dan pilihan strategi perusahaan.</p><p class="focus-line">Kelompok II: Eka &middot; Sityama &middot; Shafwan &middot; Gusti Putu &middot; Rista</p></div>
         <div class="visual"><div class="cover-quote"><p>Strategi global yang tangguh bukan strategi yang menghapus semua risiko, tetapi strategi yang memastikan bisnis tetap berjalan ketika satu pemasok, negara, jalur logistik, atau teknologi terganggu.</p><span>Pesan utama presentasi ini</span></div></div>
       </article>
 
       <article class="slide" data-title="Agenda">
-        <div class="copy"><p class="eyebrow">Peta jalan</p><h2>Alurnya mengalir dari hulu ke hilir.</h2><p class="lead">19 slide, empat babak. Kita mulai dari dasar rantai pasok, lanjut ke sebabnya, lalu diuji lewat empat organisasi nyata, dan ditutup dengan langkah yang bisa dijalankan manajer.</p><div class="statement">Sepanjang presentasi, AI berperan sebagai benang merah, yaitu penghubung antarbagian. Porsinya sengaja kami batasi kecil karena topik utamanya tetap rantai pasok.</div></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-map"/></svg></div><div class="chain-wrap"><svg class="rail" viewBox="0 0 6 120" preserveAspectRatio="none" aria-hidden="true"><path d="M3,2 V118"/></svg><div class="chain"><div class="chain-step"><b>01. Dasar</b><small>Slide 1-4 &middot; pertanyaan dan tahapan rantai</small></div><div class="chain-step"><b>02. Anatomi rantai</b><small>Slide 5-10 &middot; China, sebabnya, mineral, tekanan AI</small></div><div class="chain-step"><b>03. Studi kasus</b><small>Slide 11-15 &middot; Indonesia, TSMC, Apple, Toyota</small></div><div class="chain-step"><b>04. Langkah &amp; sikap</b><small>Slide 16-19 &middot; kerangka, batas, kesimpulan, sumber</small></div></div></div></div>
+        <div class="copy"><p class="eyebrow">Peta jalan</p><h2>Alurnya mengalir dari hulu ke hilir.</h2><p class="lead">22 slide, empat babak. Kita mulai dari dasar rantai pasok, lanjut ke sebabnya, lalu diuji lewat empat organisasi nyata, dan ditutup dengan langkah yang bisa dijalankan manajer.</p><div class="statement">Sepanjang presentasi, AI berperan sebagai benang merah, yaitu penghubung antarbagian. Porsinya sengaja kami batasi kecil karena topik utamanya tetap rantai pasok.</div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-map"/></svg></div><div class="chain-wrap"><svg class="rail" viewBox="0 0 6 120" preserveAspectRatio="none" aria-hidden="true"><path d="M3,2 V118"/></svg><div class="chain"><div class="chain-step"><b>01. Dasar</b><small>Slide 1-4 &middot; pertanyaan dan tahapan rantai</small></div><div class="chain-step"><b>02. Anatomi rantai</b><small>Slide 5-10 &middot; China, sebabnya, mineral, tekanan AI</small></div><div class="chain-step"><b>03. Studi kasus</b><small>Slide 11-17 &middot; Indonesia, TSMC, Apple, Toyota (JIT/RESCUE, China+1/friend-shoring, mineral EV)</small></div><div class="chain-step"><b>04. Langkah &amp; sikap</b><small>Slide 18-22 &middot; kerangka, batas, forecasting 2026-2029, kesimpulan, sumber</small></div></div></div></div>
       </article>
 
       <article class="slide" data-title="Pertanyaan">
@@ -208,23 +233,24 @@
       <article class="slide wide" data-title="Rantai">
         <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-flow"/></svg></div>
         <div class="copy"><p class="eyebrow">Lima tahap satu rantai</p><h2>Lima tahap yang membentuk satu produk.</h2><p class="lead">Satu ponsel di tangan kita adalah hasil lima tahap kerja yang biasanya dikerjakan di lima negara berbeda. Kalau satu tahap berhenti, empat tahap lainnya ikut menganggur.</p><div class="chain"><div class="chain-step"><b>1. Tambang</b><small>Bijih diambil dari bumi: nikel, tembaga, litium, dan sebagainya.</small></div><div class="chain-step"><b>2. Pemurnian (refining)</b><small>Bijih diubah jadi logam murni di smelter (pabrik pemurnian). Tahap ini paling sulit dipindah ke negara lain.</small></div><div class="chain-step"><b>3. Komponen</b><small>Logam murni diolah jadi chip, magnet, dan sel baterai.</small></div><div class="chain-step"><b>4. Perakitan akhir</b><small>Komponen dirakit jadi produk utuh: ponsel, mobil, panel surya.</small></div><div class="chain-step"><b>5. Produk terpakai</b><small>Barang sampai ke tangan pengguna di seluruh dunia.</small></div></div></div>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-04-rantai.png" alt="" decoding="async"></div></div>
       </article>
 
       <article class="slide flip" data-title="China">
         <div class="copy"><p class="eyebrow">China di rantai pasok</p><div class="metric"><strong><span class="num" data-to="19">19</span>/20</strong><span>bahan yang dibutuhkan sektor energi, pertahanan, transportasi, semikonduktor, dan AI, paling banyak dimurnikan di China.</span></div><h2>Kekuatan utama China ada di tahap pemurnian.</h2><p class="lead">Bahan mentah bisa ditambang di banyak negara. Begitu masuk tahap pemurnian, sebagian besar jalurnya kembali menyempit ke fasilitas milik atau berbasis di China.</p><div class="statement">Seperti dapur pusat yang memasok banyak cabang restoran. Efisien selama menyala, tapi satu gangguan di sana terasa di semua cabang pada hari yang sama.</div></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-kitchen"/></svg></div><div class="visual-label">Sumber: IEA analysis, 2026. Angka aktual, bukan proyeksi.</div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-kitchen"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-05-china.png" alt="" decoding="async"></div><div class="visual-label">Sumber: IEA analysis, 2026. Angka aktual, bukan proyeksi.</div></div>
         <p class="source">IEA analysis (2026): China memimpin tahap pemurnian untuk 19 dari 20 mineral strategis, rata-rata pangsa pasar sekitar 70%. USGS Open-File Report 2026-1018 mencatat kendali ekspor sejak 2023 mencakup antara lain antimoni, galium, germanium, grafit, rare earths, telurium, dan tungsten. Bedakan tahap: penambangan, pemurnian, komponen, perakitan akhir.</p>
       </article>
 
       <article class="slide" data-title="Kenapa China">
         <div class="copy"><p class="eyebrow">Kenapa bisa China</p><h2>Kenapa dominasi ini bisa terjadi?</h2><p class="lead">China membangun posisi ini lewat kebijakan industri yang berjalan lebih dari tiga dekade, dimulai sejak awal 1990-an.</p><ul class="list tight"><li>Pemerintah China berinvestasi di setiap tahap rantai nilai rare earth (logam tanah jarang): tambang, pemurnian, produksi, dan daur ulang (CFR, 2025).</li><li>Subsidi dan harga yang sangat rendah membuat pesaing di luar China sulit bertahan secara ekonomi (CFR, 2025).</li><li>Sejak bergabung ke WTO pada 11 Desember 2001, pangsa manufaktur China naik dari di bawah 9% (2004) menjadi 28% dari total dunia pada 2023 (WTO; CSIS ChinaPower, data World Bank, 2025).</li></ul><p class="focus-line">Titik sempit terbesar hari ini ada di pemurnian, bukan di penambangan (CFR, 2025).</p></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-timeline"/></svg></div><div class="cover-quote"><p>Timur Tengah punya minyak; China punya rare earths (logam tanah jarang).</p><span>Deng Xiaoping, kunjungan ke cekungan rare earth Baotou, 1992</span></div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-timeline"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-06-kenapa-china.png" alt="" decoding="async"></div><div class="cover-quote"><p>Timur Tengah punya minyak; China punya rare earths (logam tanah jarang).</p><span>Deng Xiaoping, kunjungan ke cekungan rare earth Baotou, 1992</span></div></div>
         <p class="source">Council on Foreign Relations, Michael Froman (17 Oktober 2025): dominasi China dibangun lewat kebijakan industri puluhan tahun dan investasi pemerintah di setiap tahap rantai nilai rare earth; China menguasai hingga 90% kapasitas pemrosesan dunia dan lebih dari 99% untuk tiga jenis rare earth yang dipakai magnet tahan panas (angka ini khusus rare earth, bukan seluruh mineral strategis). WTO: China anggota sejak 11 Desember 2001. CSIS ChinaPower Project, data World Bank World Development Indicators (diperbarui 25 November 2025): pangsa manufaktur global China di bawah 9% pada 2004 menjadi 28% pada 2023. Seluruh angka pada slide ini aktual, bukan proyeksi.</p>
       </article>
 
       <article class="slide" data-title="Mineral">
         <div class="copy"><p class="eyebrow">Bahan yang menentukan</p><h2>Bahan baku adalah <em>bumbu</em> bagi teknologi.</h2><p class="lead">Mineral strategis (bahan baku yang sulit diganti dan dipakai di teknologi kunci), termasuk rare earths, adalah bumbu yang menentukan apakah produksi bisa jalan. Tanpa satu bahan tertentu, dapur tidak bisa mengeluarkan menunya sama sekali, meski koki dan dapurnya sudah siap sejak pagi.</p><ul class="list"><li><b>Chip &amp; optik</b>: silicon, gallium, germanium</li><li><b>Data centre &amp; listrik</b>: copper, aluminium, rare earths</li><li><b>Baterai &amp; penyimpanan</b>: nickel, lithium, cobalt, graphite</li><li><b>Elektronik</b>: tin, tantalum, tungsten, gold</li></ul></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-mortar"/></svg></div><div class="spice-rack" aria-hidden="true"><span>Si</span><span>Ga</span><span>Cu</span><span>Ni</span><span>Li</span><span>W</span></div><div class="visual-label">Permintaan galium untuk pusat data pada 2030 bisa mencapai hingga 10% pasokan hari ini (proyeksi).</div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-mortar"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-07-mineral.png" alt="" decoding="async"></div><div class="visual-label">Permintaan galium untuk pusat data pada 2030 bisa mencapai hingga 10% pasokan hari ini (proyeksi).</div></div>
         <p class="source">IEA, Energy and AI (2025): permintaan galium pusat data pada 2030 diperkirakan hingga 10% pasokan saat ini (proyeksi), sementara China memegang sekitar 95% pemurnian galium.</p>
       </article>
 
@@ -238,12 +264,14 @@
         <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-gate"/></svg></div>
         <div class="copy"><p class="eyebrow">Ketika rantai benar-benar berhenti</p><h2>Satu kendali ekspor, produksi berhenti di banyak negara.</h2><p class="lead">Pada April 2025, China memperketat kendali ekspor rare earth. Dalam hitungan minggu, produksi otomotif di berbagai negara sempat terhenti karena pasokan magnet tidak sampai ke pabrik perakitan (IEA, 2026).</p><div class="statement">Ini sudah terjadi sekali. Mineral lain yang konsentrasinya mirip bisa mengalami hal yang sama.</div></div>
         <p class="source">IEA (2026) mencatat kendali ekspor rare earth yang diperketat pada April 2025 sempat menghentikan produksi otomotif secara global. Ini contoh gangguan tingkat sistem, sudah terjadi, bukan skenario proyeksi.</p>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-09-keran.png" alt="" decoding="async"></div></div>
       </article>
 
       <article class="slide wide" data-title="Kamus strategi">
         <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-bridge"/></svg></div>
         <div class="copy"><p class="eyebrow">Kamus istilah</p><h2>Enam istilah yang akan sering kita dengar.</h2><p class="lead">Istilah-istilah ini nanti muncul lagi di kasus Indonesia, TSMC, Apple, dan Toyota. Berikut artinya dalam bahasa yang lebih sederhana.</p><div class="comparison"><div><b>Reshoring</b><span>Memindahkan produksi kembali ke negara asal perusahaan.</span></div><div><b>Near-shoring</b><span>Memindahkan produksi ke negara yang secara geografis lebih dekat.</span></div><div><b>Friend-shoring</b><span>Memilih negara pemasok yang secara politik dipercaya, meski jauh.</span></div><div><b>China+1</b><span>Tetap memakai China, sambil menambah satu basis produksi di negara lain.</span></div><div><b>Diversifikasi</b><span>Menambah jumlah pemasok independen di lebih dari satu tahap rantai.</span></div><div><b>Decoupling</b><span>Memutus hubungan dagang dan produksi dengan China sepenuhnya. Tidak dipakai oleh keempat kasus di presentasi ini.</span></div></div></div>
         <p class="source">IMF, Supply Chain Diversification and Resilience (WP/25/102, 2025) memperingatkan friend-shoring dapat mengurangi diversifikasi bila hanya mengalihkan pasokan ke mitra yang sudah ada; hasil model menunjukkan trade-off nyata antara resiliensi dan biaya ekonomi.</p>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-10-kamus.png" alt="" decoding="async"></div></div>
       </article>
 
       <article class="slide" data-title="Indonesia">
@@ -254,7 +282,7 @@
 
       <article class="slide flip" data-title="TSMC">
         <div class="copy"><p class="case-kicker">Tahap rantai: komponen &middot; Kasus 2 dari 4</p><h2 class="case-name">TSMC</h2><div class="case-box">Pabrik chip lebih mirip rumah sakit khusus daripada gudang. Tidak bisa dipindah akhir pekan, dan perlu bertahun sebelum benar-benar beroperasi penuh.<br><br>Diversifikasi lokasi butuh semua ini sekaligus:<ul class="list tight"><li>Modal besar dan tenaga ahli yang langka</li><li>Air dan listrik dalam jumlah besar</li><li>Ekosistem pemasok yang butuh bertahun untuk tumbuh</li></ul>TSMC sudah mengerjakan diversifikasi ini sejak bertahun sebelum tekanan geopolitik naik.</div></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-chip"/></svg></div><div class="comparison"><div><b>Taiwan</b><span>Basis utama, node (ukuran kehalusan chip) paling maju.</span></div><div><b>Arizona &amp; Jepang</b><span>Kapasitas tambahan di pasar mitra dekat.</span></div><div><b>Nanjing</b><span>Node lebih lama, pasar China tetap dilayani.</span></div><div><b>Dresden</b><span>Fab (pabrik pembuat chip) spesialis, masih dalam pembangunan.</span></div></div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-chip"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-12-tsmc.png" alt="" decoding="async"></div><div class="comparison"><div><b>Taiwan</b><span>Basis utama, node (ukuran kehalusan chip) paling maju.</span></div><div><b>Arizona &amp; Jepang</b><span>Kapasitas tambahan di pasar mitra dekat.</span></div><div><b>Nanjing</b><span>Node lebih lama, pasar China tetap dilayani.</span></div><div><b>Dresden</b><span>Fab (pabrik pembuat chip) spesialis, masih dalam pembangunan.</span></div></div></div>
         <p class="source">TSMC Annual Report 2025: kapasitas manufaktur tercatat di Taiwan, China (Nanjing), Arizona, dan Jepang, serta kemajuan menuju fab spesialis di Dresden, Jerman.</p>
       </article>
 
@@ -262,17 +290,31 @@
         <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-house"/></svg></div>
         <div class="copy"><p class="case-kicker">Tahap rantai: perakitan akhir &middot; Kasus 3 dari 4</p><h2 class="case-name">Apple</h2><div class="statement">Apple menulis di laporan tahunannya (Form 10-K FY2025): sebagian besar manufakturnya dikerjakan mitra alih daya di China daratan, India, Jepang, Korea Selatan, Taiwan, dan Vietnam.</div><p class="lead">Apple menambah dapur kedua di India dan Vietnam, tanpa meninggalkan dapur utama di China. China+1 berarti membangun kemampuan pemasok dari nol di lokasi kedua, bukan cuma memindahkan alamat pabrik.</p><div class="tag-row"><span class="tag hot">China</span><span class="tag">India</span><span class="tag">Vietnam</span><span class="tag">Japan</span><span class="tag">Korea</span><span class="tag">Taiwan</span></div></div>
         <p class="source">Apple Form 10-K FY2025: mayoritas manufaktur dikerjakan mitra alih daya terutama di China daratan, India, Jepang, Korea Selatan, Taiwan, dan Vietnam; Apple memperingatkan perubahan rantai pasok butuh waktu dan sumber daya besar. Apple Newsroom India (2026) untuk pengembangan kemampuan di 25+ lokasi pemasok. Apple tidak menyatakan keluar dari China.</p>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-13-apple.png" alt="" decoding="async"></div></div>
       </article>
 
       <article class="slide" data-title="Toyota">
-        <div class="copy"><p class="case-kicker">Tahap rantai: operasi pabrik (hilir) &middot; Kasus 4 dari 4</p><div class="metric"><strong><span class="num" data-to="1">1</span>-<span class="num" data-to="4">4</span></strong><span>bulan stok semikonduktor yang dinyatakan Toyota dalam BCP (business continuity plan), rencana agar produksi tetap jalan saat krisis, tahun 2021.</span></div><h2 class="case-name">Toyota</h2><ul class="list"><li><b>2011.</b> Gempa Jepang mengungkap titik lemah pemasok chip lapis dua dan tiga.</li><li><b>2012-2020.</b> Toyota memperkuat BCP dan visibilitas pemasok lebih dalam.</li><li><b>2021.</b> Toyota menyatakan stok semikonduktor 1-4 bulan dalam BCP-nya.</li><li><b>2021-2022.</b> Gangguan berlanjut. Toyota tetap memakai just-in-time (JIT), yaitu memesan komponen tepat saat dibutuhkan, untuk sebagian besar komponen lain.</li></ul></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-conveyor"/></svg></div><div class="visual-label">Bukan studi friend-shoring. Ini studi resiliensi operasional di tahap pabrik.</div></div>
-        <p class="source">Toyota Times, wawancara CFO (2021) untuk angka stok 1-4 bulan; Toyota Integrated Report 2024 (sistem supply-demand berbasis AI) dan 2025 (survei rantai pasok bahan baterai: kobalt, litium, nikel, grafit). Toyota tetap menghadapi tekanan produksi ketika gangguan berlanjut.</p>
+        <div class="copy"><p class="case-kicker">Tahap rantai: operasi pabrik (hilir) &middot; Kasus 4 dari 4 &middot; 1/3</p><div class="metric"><strong><span class="num" data-to="1">1</span>-<span class="num" data-to="4">4</span></strong><span>bulan stok semikonduktor yang dinyatakan Toyota dalam BCP (business continuity plan), rencana agar produksi tetap jalan saat krisis, tahun 2021.</span></div><h2 class="case-name">Toyota</h2><ul class="list"><li><b>2011.</b> Gempa dan tsunami Jepang mengungkap titik lemah pemasok chip lapis dua dan tiga.</li><li><b>2012-2020.</b> Toyota membangun sistem RESCUE (Reinforce Supply Chain Under Emergency) untuk visibilitas hingga pemasok tier-2 dan tier-3.</li><li><b>2021.</b> Toyota menyatakan stok semikonduktor 1-4 bulan dalam BCP-nya.</li><li><b>2021-2022.</b> Gangguan berlanjut. Toyota tetap memakai just-in-time (JIT), yaitu memesan komponen tepat saat dibutuhkan, untuk sebagian besar komponen lain.</li></ul></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-conveyor"/></svg></div><div class="visual-label">Bagian 1/3: JIT, gempa 2011, dan RESCUE di tahap operasi pabrik. Lanjut ke China+1, friend-shoring, dan mineral EV.</div></div>
+        <p class="source">Toyota Times, wawancara CFO (2021) untuk angka stok 1-4 bulan; Toyota Integrated Report 2024 (sistem supply-demand berbasis AI). Sistem RESCUE mengikuti Makalah Kelompok II (2026), Bab 3.3, berdasarkan pengalaman Toyota pasca gempa Jepang 2011.</p>
+      </article>
+
+      <article class="slide" data-title="Toyota lanjutan 1">
+        <div class="copy"><p class="case-kicker">Tahap rantai: jaringan pemasok &amp; lokasi produksi &middot; Kasus 4 dari 4 &middot; 2/3</p><h2 class="case-name">China+1 &amp;<br>Friend-shoring</h2><p class="lead">China tetap jadi pasar dan basis produksi penting bagi Toyota. China+1 di sini bukan keluar dari China, melainkan menambah kapasitas di Asia Tenggara, Jepang, Amerika Utara, dan India supaya satu lokasi tidak jadi titik gagal tunggal.</p><p class="lead">Friend-shoring mendorong Toyota membangun hubungan jangka panjang dengan pemasok dari negara yang hubungan dagangnya lebih stabil, walau biayanya belum tentu paling rendah. Pertanyaan sourcing bergeser dari &ldquo;di mana biaya paling murah?&rdquo; menjadi &ldquo;di mana pasokan paling aman dan bisa dipertahankan jangka panjang?&rdquo;</p><div class="tag-row"><span class="tag hot">China</span><span class="tag">Asia Tenggara</span><span class="tag">Jepang</span><span class="tag">Amerika Utara</span><span class="tag">India</span></div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-scales"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-15-toyota2.png" alt="" decoding="async"></div><div class="comparison"><div><b>Efficiency</b><span>Persediaan rendah, biaya rendah, produksi terkoordinasi, pemasok tunggal yang efisien.</span></div><div><b>Resilience</b><span>Pemasok alternatif, persediaan strategis, diversifikasi lokasi, visibilitas rantai pasok.</span></div></div></div>
+        <p class="source">Makalah Kelompok II (2026), Bab 3.4-3.5 &amp; 4.2: jaringan lokasi Toyota (China, Asia Tenggara, Jepang, Amerika Utara, India) dan trade-off efficiency-resilience, merujuk Christopher, Logistics &amp; Supply Chain Management (2016).</p>
+      </article>
+
+      <article class="slide wide" data-title="Toyota lanjutan 2">
+        <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-mortar"/></svg></div>
+        <div class="copy"><p class="case-kicker">Tahap rantai: mineral &amp; strategi keseluruhan &middot; Kasus 4 dari 4 &middot; 3/3</p><h2>Mineral EV dan ringkasan strategi Toyota.</h2><p class="lead">Elektrifikasi menambah kebutuhan lithium, nickel, dan cobalt untuk baterai, serta rare earth elements untuk motor listrik. Toyota menjalankan due diligence atas mineral ini untuk menekan risiko sumber, isu lingkungan, hak pekerja, dan geopolitik.</p><ul class="refs"><li><b>Bencana alam</b><span>Sistem manajemen risiko &amp; RESCUE &mdash; tujuan: mempercepat pemulihan.</span></li><li><b>Ketergantungan pemasok</b><span>Diversifikasi pemasok &mdash; tujuan: mengurangi single-source risk.</span></li><li><b>Ketergantungan lokasi</b><span>Diversifikasi produksi &mdash; tujuan: mengurangi geographic concentration.</span></li><li><b>Ketegangan geopolitik</b><span>China+1 &amp; diversifikasi global &mdash; tujuan: mengurangi geopolitical risk.</span></li><li><b>Hubungan antarnegara</b><span>Friend-shoring &mdash; tujuan: meningkatkan keamanan pasokan.</span></li><li><b>Kelangkaan bahan baku</b><span>Pengamanan strategic minerals &mdash; tujuan: menjamin pasokan jangka panjang.</span></li><li><b>Pemasok tingkat bawah</b><span>Supply chain visibility &mdash; tujuan: mengetahui risiko tier-2/tier-3.</span></li></ul></div>
+        <p class="source">Toyota Integrated Report 2025 (survei rantai pasok bahan baterai: kobalt, litium, nikel, grafit). Ringkasan strategi mengikuti Makalah Kelompok II (2026), Bab 3.6-3.7.</p>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-16-toyota3.png" alt="" decoding="async"></div></div>
       </article>
 
       <article class="slide" data-title="Sintesis">
         <div class="copy"><p class="eyebrow">Sintesis lintas kasus</p><h2>Empat organisasi, empat tahap rantai yang berbeda.</h2><p class="lead">Keempat kasus tidak menjawab masalah yang sama. Disusun berurutan, dari hulu ke hilir, semuanya membentuk satu gambar utuh tentang di mana risiko bisa dikelola.</p><div class="statement">Cara paling berguna membaca keempat kasus ini: perhatikan titik intervensi yang dipilih tiap organisasi, bukan cuma hasil akhirnya.</div></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-matrix"/></svg></div><div class="matrix"><div class="quad"><b>Indonesia</b><small>Hilirisasi nikel menuju sel baterai; peluang nilai tambah dengan risiko konsentrasi pemurnian.</small><em>Tahap: tambang &amp; pemurnian</em></div><div class="quad"><b>TSMC</b><small>Kapasitas chip tersebar lintas yurisdiksi; mahal, lambat, dan padat prasyarat.</small><em>Tahap: komponen</em></div><div class="quad"><b>Apple</b><small>China+1 lewat India dan Vietnam; membangun kemampuan pemasok, bukan sekadar lokasi baru.</small><em>Tahap: perakitan akhir</em></div><div class="quad"><b>Toyota</b><small>Buffer terpilih, visibilitas hingga pemasok dalam, BCP yang diperbarui setelah krisis.</small><em>Tahap: operasi pabrik (hilir)</em></div></div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-matrix"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-17-sintesis.png" alt="" decoding="async"></div><div class="matrix"><div class="quad"><b>Indonesia</b><small>Hilirisasi nikel menuju sel baterai; peluang nilai tambah dengan risiko konsentrasi pemurnian.</small><em>Tahap: tambang &amp; pemurnian</em></div><div class="quad"><b>TSMC</b><small>Kapasitas chip tersebar lintas yurisdiksi; mahal, lambat, dan padat prasyarat.</small><em>Tahap: komponen</em></div><div class="quad"><b>Apple</b><small>China+1 lewat India dan Vietnam; membangun kemampuan pemasok, bukan sekadar lokasi baru.</small><em>Tahap: perakitan akhir</em></div><div class="quad"><b>Toyota</b><small>RESCUE pasca-gempa, China+1, friend-shoring, dan due diligence mineral EV; JIT tetap jalan sambil menambah ketahanan.</small><em>Tahap: operasi pabrik (hilir)</em></div></div></div>
         <p class="source">Pemisahan analitis mengikuti standar evidence pada research brief: resiliensi operasional (Toyota), diversifikasi korporat (Apple), kapasitas semikonduktor (TSMC), dan strategi industri nasional (Indonesia) tidak boleh dicampur sebagai bukti untuk klaim yang sama.</p>
       </article>
 
@@ -284,8 +326,14 @@
 
       <article class="slide flip" data-title="Batas">
         <div class="copy"><p class="eyebrow">Batas argumen</p><h2>Apa yang <em>tidak</em> kami klaim.</h2><p class="lead">Posisi kelompok tetap: diversifikasi strategis dengan pemetaan ketergantungan yang transparan, bukan keluar dari China. Namun posisi itu punya harga dan batas, dan kami ingin menyebutnya terang-terangan.</p><ul class="list tight"><li>Diversifikasi menaikkan biaya dan butuh waktu. IMF mencatat trade-off nyata antara resiliensi dan biaya ekonomi.</li><li>Friend-shoring bisa menciptakan konsentrasi baru bila hanya mengalihkan pasokan ke mitra yang sudah ada.</li><li>Pemasok lapis satu (tier-1) di luar China masih bisa bergantung pada input olahan, magnet, grafit, atau peralatan dari China.</li><li>Angka pada deck ini mencakup proyeksi bertahun tertentu, bukan kepastian. AI mempercepat pembacaan risiko, bukan menambah pasokan mineral.</li></ul></div>
-        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-lens"/></svg></div><div class="comparison"><div><b>Kami klaim</b><span>Ketergantungan pada satu titik kegagalan adalah risiko strategis yang bisa dikelola.</span></div><div><b>Bukan klaim kami</b><span>Bahwa ada perusahaan yang sudah benar-benar lepas dari China.</span></div><div><b>Bukan klaim kami</b><span>Bahwa pabrik, MOU, atau investasi yang diumumkan otomatis berarti rantai pasok sudah terdiversifikasi.</span></div></div></div>
+        <div class="visual"><div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-lens"/></svg></div><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-19-batas.png" alt="" decoding="async"></div><div class="comparison"><div><b>Kami klaim</b><span>Ketergantungan pada satu titik kegagalan adalah risiko strategis yang bisa dikelola.</span></div><div><b>Bukan klaim kami</b><span>Bahwa ada perusahaan yang sudah benar-benar lepas dari China.</span></div><div><b>Bukan klaim kami</b><span>Bahwa pabrik, MOU, atau investasi yang diumumkan otomatis berarti rantai pasok sudah terdiversifikasi.</span></div></div></div>
         <p class="source">IMF, Supply Chain Diversification and Resilience (2025); IMF, Geoeconomic Fragmentation and FDI, WEO Bab 4 (2023); USGS Open-File Report 2026-1018 (2026); IEA (2026) mencatat kendali ekspor rare earth April 2025 sempat menghentikan produksi otomotif secara global.</p>
+      </article>
+
+      <article class="slide wide" data-title="Forecasting">
+        <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-timeline"/></svg></div>
+        <div class="copy"><p class="eyebrow">Proyeksi 2026-2029</p><h2>Ke mana arah rantai pasok ini dalam 3-4 tahun?</h2><p class="lead">Teknik yang dipakai: ekstrapolasi tren dari data aktual IEA/USGS yang sudah kita lihat, dipadukan scenario planning, yaitu menyusun beberapa jalur kemungkinan alih-alih satu angka pasti. Tiga skenario di bawah berangkat dari titik yang sama tahun 2026 lalu berpencar sampai 2029.</p><p class="focus-line">Konteks skala: IEA memproyeksikan konsumsi listrik pusat data AI global naik dari 485 TWh (2025) menjadi sekitar 950 TWh (2030), tekanan yang mendorong semua skenario di bawah.</p><div class="forecast-grid"><div class="comparison"><div><b>Status quo</b><span>Permintaan AI dan EV naik lebih cepat dari kapasitas pemurnian baru di luar China; pangsa China bertahan tinggi.</span></div><div><b>Diversifikasi terakselerasi</b><span>Kapasitas pemurnian baru di Indonesia, AS, Jepang, dan Uni Eropa mulai beroperasi 2027-2028; pangsa China turun bertahap.</span></div><div><b>Eskalasi berulang</b><span>Kendali ekspor diperketat lagi seperti April 2025; gangguan produksi berulang tiap 1-2 tahun, pangsa naik-turun tajam.</span></div></div><div><svg class="fchart" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Grafik tiga skenario pangsa pemurnian China 2026-2029"><line class="grid-line" x1="40" y1="40" x2="560" y2="40"/><line class="grid-line" x1="40" y1="95" x2="560" y2="95"/><line class="grid-line" x1="40" y1="150" x2="560" y2="150"/><line class="grid-line" x1="40" y1="205" x2="560" y2="205"/><text x="32" y="43" text-anchor="end">80%</text><text x="32" y="98" text-anchor="end">70%</text><text x="32" y="153" text-anchor="end">60%</text><text x="32" y="208" text-anchor="end">50%</text><text x="32" y="263" text-anchor="end">40%</text><line class="axis" x1="40" y1="40" x2="40" y2="260"/><line class="axis" x1="40" y1="260" x2="560" y2="260"/><text x="70" y="278" text-anchor="middle">2026</text><text x="220" y="278" text-anchor="middle">2027</text><text x="370" y="278" text-anchor="middle">2028</text><text x="520" y="278" text-anchor="middle">2029</text><polyline class="line esc" points="70,95 220,73 370,106 520,56.5"/><polyline class="line quo" points="70,95 220,89.5 370,84 520,78.5"/><polyline class="line div" points="70,95 220,117 370,150 520,177.5"/><circle class="pt esc" cx="70" cy="95"/><circle class="pt esc" cx="220" cy="73"/><circle class="pt esc" cx="370" cy="106"/><circle class="pt esc" cx="520" cy="56.5"/><circle class="pt quo" cx="70" cy="95"/><circle class="pt quo" cx="220" cy="89.5"/><circle class="pt quo" cx="370" cy="84"/><circle class="pt quo" cx="520" cy="78.5"/><circle class="pt div" cx="70" cy="95"/><circle class="pt div" cx="220" cy="117"/><circle class="pt div" cx="370" cy="150"/><circle class="pt div" cx="520" cy="177.5"/></svg><div class="flegend"><div><span class="dot" style="background:var(--muted)"></span>Status quo (garis putus abu)</div><div><span class="dot" style="background:var(--gold)"></span>Diversifikasi terakselerasi</div><div><span class="dot" style="background:var(--red)"></span>Eskalasi berulang (garis putus merah)</div></div></div></div></div>
+        <p class="source">Angka 485 TWh (2025) dan sekitar 950 TWh (2030) adalah proyeksi aktual IEA, Key Questions on Energy and AI (2026), sama seperti dikutip di slide Tekanan AI. Kurva pangsa pemurnian China 2026-2029 adalah skenario ilustratif kelompok, disusun dari arah kebijakan pada IEA, CFR, dan USGS yang sudah dirujuk di deck ini, bukan angka resmi dari lembaga tersebut.</p>
       </article>
 
       <article class="slide closing" data-title="Kesimpulan">
@@ -297,13 +345,14 @@
       <article class="slide wide" data-title="Sumber">
         <div class="silhouette" aria-hidden="true"><svg viewBox="0 0 200 160"><use href="#sil-book"/></svg></div>
         <div class="copy"><p class="eyebrow">Rujukan</p><h2>Sumber primer dan otoritatif.</h2><ul class="refs"><li><b>IEA</b><span>Energy and AI (2025); Key Questions on Energy and AI (2026); Global EV Outlook (2025); analisis harga tembaga dan tekanan strategis smelter (2026).</span></li><li><b>IMF</b><span>Supply Chain Diversification and Resilience, WP/25/102 (2025); Geoeconomic Fragmentation and Foreign Direct Investment, WEO Bab 4 (2023).</span></li><li><b>USGS</b><span>Open-File Report 2026-1018 (2026): produksi mineral global dan cakupan kendali ekspor sejak 2023.</span></li><li><b>CFR</b><span>Michael Froman, &ldquo;China, the United States, and a Critical Chokepoint on Minerals&rdquo; (17 Oktober 2025).</span></li><li><b>WTO</b><span>Keanggotaan China resmi sejak 11 Desember 2001.</span></li><li><b>CSIS</b><span>ChinaPower Project, &ldquo;Measuring China's Manufacturing Might,&rdquo; data World Bank World Development Indicators (diperbarui 25 November 2025).</span></li><li><b>Toyota</b><span>Toyota Times, wawancara CFO (2021); rilis produksi (2022); Integrated Report 2024 dan 2025.</span></li><li><b>Apple</b><span>Form 10-K FY2025; Apple Newsroom India (2026); pembaruan lingkungan (2025).</span></li><li><b>TSMC</b><span>Annual Report 2025: kapasitas Taiwan, Nanjing, Arizona, Jepang, dan rencana Dresden.</span></li><li><b>BKPM</b><span>Siaran pers produksi massal baterai kendaraan listrik (2024).</span></li></ul><p class="lead" style="margin-top:24px;font-size:13px;max-width:820px">Batas riset: 1 September 2026. Setiap angka pada deck ini ditandai tahun dan statusnya, aktual atau proyeksi. Klaim perusahaan tidak diperluas melebihi pernyataan sumber primernya.</p></div>
+        <div class="visual"><div class="render3d" aria-hidden="true"><img src="assets/3d/slide-21-sumber.png" alt="" decoding="async"></div></div>
       </article>
 
     </section>
     <footer class="footer">
       <div class="section-label" id="section" aria-hidden="true"></div>
-      <div class="progress" aria-hidden="true"><span class="seg" style="flex:4"><b></b></span><span class="seg" style="flex:6"><b></b></span><span class="seg" style="flex:5"><b></b></span><span class="seg" style="flex:4"><b></b></span></div>
-      <div class="controls"><button id="prev" aria-label="Slide sebelumnya">&larr;</button><span class="count" id="count">01 / 19</span><button id="next" aria-label="Slide berikutnya">&rarr;</button></div>
+      <div class="progress" aria-hidden="true"><span class="seg" style="flex:4"><b></b></span><span class="seg" style="flex:6"><b></b></span><span class="seg" style="flex:7"><b></b></span><span class="seg" style="flex:5"><b></b></span></div>
+      <div class="controls"><button id="prev" aria-label="Slide sebelumnya">&larr;</button><span class="count" id="count">01 / 22</span><button id="next" aria-label="Slide berikutnya">&rarr;</button></div>
     </footer>
   </main>
   <script>
@@ -315,8 +364,8 @@
     const SECTIONS = [
       { name: 'Dasar', start: 0, end: 3 },
       { name: 'Anatomi rantai', start: 4, end: 9 },
-      { name: 'Studi kasus', start: 10, end: 14 },
-      { name: 'Langkah & sikap', start: 15, end: 18 }
+      { name: 'Studi kasus', start: 10, end: 16 },
+      { name: 'Langkah & sikap', start: 17, end: 21 }
     ];
     let current = 0, locked = false;
 
@@ -365,11 +414,13 @@
 
     if (!reduce && window.matchMedia('(pointer:fine)').matches) {
       const amb = document.querySelector('.ambient');
-      let queued = 0, tx = 0, ty = 0;
+      const renders = [...document.querySelectorAll('.render3d')];
+      let queued = 0, tx = 0, ty = 0, tiltX = 0, tiltY = 0;
       document.addEventListener('pointermove', e => {
-        tx = (e.clientX / window.innerWidth - .5) * -20;
-        ty = (e.clientY / window.innerHeight - .5) * -16;
-        if (!queued) queued = requestAnimationFrame(() => { amb.style.setProperty('--px', tx.toFixed(1) + 'px'); amb.style.setProperty('--py', ty.toFixed(1) + 'px'); queued = 0; });
+        const x = e.clientX / window.innerWidth - .5;
+        const y = e.clientY / window.innerHeight - .5;
+        tx = x * -20; ty = y * -16; tiltX = y * -6; tiltY = x * 8;
+        if (!queued) queued = requestAnimationFrame(() => { amb.style.setProperty('--px', tx.toFixed(1) + 'px'); amb.style.setProperty('--py', ty.toFixed(1) + 'px'); renders.forEach(render => { render.style.setProperty('--tilt-x', tiltX.toFixed(1) + 'deg'); render.style.setProperty('--tilt-y', tiltY.toFixed(1) + 'deg'); }); queued = 0; });
       }, {passive:true});
     }
 
