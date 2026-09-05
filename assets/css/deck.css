@@ -527,9 +527,13 @@ h2 {
 /* paired with a data card: the card leads, the render supports */
 .visual:has(> .comparison) .render3d,
 .visual:has(> .matrix) .render3d,
-.visual:has(> .cover-quote) .render3d { width:min(38%, 172px); }
+.visual:has(> .cover-quote) .render3d,
+.visual:has(> .stack) .render3d { width:min(38%, 172px); }
 
 .visual > :is(.comparison, .matrix, .cover-quote, .chain-wrap, .stack) { flex:0 1 auto; }
+
+/* paired with a render3d image: the cube shares space instead of owning the column */
+.visual:has(> .render3d) .stack { width:min(200px, 46%); }
 
 /* caption sits in flow on its own line, so it can never land on the art */
 .visual-label {
@@ -757,8 +761,8 @@ h2 {
 @keyframes popIn { from { transform:scale(0); } to { transform:scale(1); } }
 @keyframes wordRise { from { transform:translateY(118%); } to { transform:translateY(0); } }
 @keyframes render3dFloat {
-  from { transform:translateY(6px) rotateY(-5deg); }
-  to   { transform:translateY(-6px) rotateY(5deg); }
+  from { transform:translateY(8px) rotateY(-16deg); }
+  to   { transform:translateY(-8px) rotateY(16deg); }
 }
 
 .slide.active .copy > * { animation:rise .68s both; }
@@ -841,7 +845,9 @@ h2 {
   .render3d { width:min(64%, 220px); }
   .visual:has(> .comparison) .render3d,
   .visual:has(> .matrix) .render3d,
-  .visual:has(> .cover-quote) .render3d { width:min(46%, 160px); }
+  .visual:has(> .cover-quote) .render3d,
+  .visual:has(> .stack) .render3d { width:min(46%, 160px); }
+  .visual:has(> .render3d) .stack { width:min(150px, 40%); }
 }
 
 /* ---------------------------------------------------------
