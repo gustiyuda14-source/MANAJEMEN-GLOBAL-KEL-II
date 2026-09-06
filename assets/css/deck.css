@@ -524,19 +524,6 @@ h2 {
   filter:drop-shadow(0 16px 22px rgba(79,44,34,.18));
   transform-style:preserve-3d;
 }
-/* multiple renders sharing one slide (e.g. Toyota slide 14): a row that
-   wraps and shrinks each tile instead of letting them stack on top of
-   each other inside a single fixed-height .visual */
-.render3d-row {
-  flex:1 0 100%;
-  display:flex;
-  flex-flow:row wrap;
-  align-items:center;
-  justify-content:center;
-  gap:var(--sp-3);
-}
-.render3d-row .render3d { width:min(30%, 150px); }
-
 /* paired with a data card: the card leads, the render supports */
 .visual:has(> .comparison) .render3d,
 .visual:has(> .matrix) .render3d,
@@ -861,7 +848,6 @@ h2 {
   .visual:has(> .cover-quote) .render3d,
   .visual:has(> .stack) .render3d { width:min(46%, 160px); }
   .visual:has(> .render3d) .stack { width:min(150px, 40%); }
-  .render3d-row .render3d { width:min(28%, 96px); }
 }
 
 /* ---------------------------------------------------------
